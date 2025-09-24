@@ -15,9 +15,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // Membuat Akun Admin
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin Camture',
+            'email' => 'admin@camture.com',
+            'password' => bcrypt('password'), // passwordnya adalah 'password'
+            'role' => 'admin',
+        ]);
+
+        // Membuat Akun User Biasa
+        User::factory()->create([
+            'name' => 'User Camture',
+            'email' => 'user@camture.com',
+            'password' => bcrypt('password'), // passwordnya adalah 'password'
+            'role' => 'user',
         ]);
     }
 }
