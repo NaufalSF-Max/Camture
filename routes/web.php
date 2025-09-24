@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\TemplateController; // <-- Tambahkan ini
+use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\PhotoboothController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,5 +32,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 });
 
+// RUTE UNTUK FITUR PHOTOBOOTH UTAMA
+Route::get('/camture', [PhotoboothController::class, 'show'])->name('camture.show');
+Route::post('/camture/capture', [PhotoboothController::class, 'capture'])->name('camture.capture')->middleware('auth'); // Sementara kita proteksi
 
 require __DIR__.'/auth.php';
