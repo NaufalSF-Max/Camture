@@ -33,7 +33,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 // RUTE UNTUK FITUR PHOTOBOOTH UTAMA
-Route::get('/camture', [PhotoboothController::class, 'show'])->name('camture.show');
+Route::get('/camture/{template}', [PhotoboothController::class, 'show'])->name('camture.show')->middleware('auth');
 Route::post('/camture/capture', [PhotoboothController::class, 'capture'])->name('camture.capture')->middleware('auth'); // Sementara kita proteksi
+
+// Rute untuk menampilkan halaman pemilihan layout/template
+Route::get('/layouts', [PhotoboothController::class, 'selectLayout'])->name('layouts.select')->middleware('auth');
+
+// RUTE Untuk menampilkan halaman hasil/preview satu foto
+Route::get('/photo/{photo}', [PhotoboothController::class, 'showResult'])->name('photo.show')->middleware('auth');
+
+// RUTE BARU: Untuk menampilkan galeri foto milik pengguna
+Route::get('/my-photos', [PhotoboothController::class, 'myPhotos'])->name('photo.gallery')->middleware('auth');
 
 require __DIR__.'/auth.php';

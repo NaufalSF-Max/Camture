@@ -12,8 +12,12 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('layouts.select')" :active="request()->routeIs('layouts.select')">
+                        {{ __('Mulai Photobooth') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('photo.gallery')" :active="request()->routeIs('photo.gallery')">
+                        {{ __('Galeri Saya') }}
                     </x-nav-link>
                 </div>
             </div>

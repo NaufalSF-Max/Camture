@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Template;
+use Illuminate\Http\Request;
 
 class TemplateController extends Controller
 {
@@ -13,7 +13,9 @@ class TemplateController extends Controller
      */
     public function index()
     {
-        //
+        // TODO: Buat halaman untuk menampilkan semua template
+        $templates = Template::latest()->paginate(10);
+        return view('admin.templates.index', compact('templates'));
     }
 
     /**
@@ -29,31 +31,34 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input [cite: 421]
+        // 1. Validasi Input, termasuk data JSON dari alat visual
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'capture_slots' => 'required|integer|min:1',
-            'image' => 'required|image|mimes:png', // Wajib gambar, format PNG
+            'image' => 'required|image|mimes:png',
+            'slot_positions' => 'required|json', // Memastikan data yang masuk adalah JSON valid
         ]);
 
-        // 2. Simpan File Gambar
+        // 2. Simpan File Gambar Template
         $path = $request->file('image')->store('templates', 'public');
 
-        // 3. Simpan Data ke Database [cite: 440]
+        // 3. Simpan Data ke Database, termasuk data JSON
         Template::create([
             'name' => $validated['name'],
-            'capture_slots' => $validated['capture_slots'],
             'image_path' => $path,
+            'capture_slots' => $validated['capture_slots'],
+            'slot_positions' => $validated['slot_positions'], // Menyimpan data koordinat
         ]);
 
         // 4. Redirect dengan Pesan Sukses
+        // Untuk sekarang, kita arahkan ke dashboard admin
         return redirect()->route('admin.dashboard')->with('success', 'Template berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Template $template)
     {
         //
     }
@@ -61,24 +66,24 @@ class TemplateController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Template $template)
     {
-        //
+        // TODO: Buat halaman edit
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Template $template)
     {
-        //
+        // TODO: Buat logika untuk update
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Template $template)
     {
-        //
+        // TODO: Buat logika untuk hapus
     }
 }

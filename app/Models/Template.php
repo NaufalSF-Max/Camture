@@ -19,5 +19,6 @@ class Template extends Model
         'image_path',
         'capture_slots',
         'is_active',
+        'slot_positions',
     ];
 }
