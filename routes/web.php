@@ -42,6 +42,8 @@ Route::get('/layouts', [PhotoboothController::class, 'selectLayout'])->name('lay
 // RUTE Untuk menampilkan halaman hasil/preview satu foto
 Route::get('/photo/{photo}', [PhotoboothController::class, 'showResult'])->name('photo.show')->middleware('auth');
 
+// RUTE BARU: Untuk menyimpan judul foto
+Route::patch('/photo/{photo}/title', [PhotoboothController::class, 'updateTitle'])->name('photo.update_title')->middleware('auth');
 // RUTE BARU: Untuk menampilkan galeri foto milik pengguna
 Route::get('/my-photos', [PhotoboothController::class, 'myPhotos'])->name('photo.gallery')->middleware('auth');
 

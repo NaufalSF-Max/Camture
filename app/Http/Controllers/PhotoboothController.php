@@ -24,6 +24,30 @@ class PhotoboothController extends Controller
         return view('camture', ['template' => $template]);
     }
 
+    /**
+     * METHOD BARU: Update judul foto.
+     */
+    public function updateTitle(Request $request, Photo $photo)
+    {
+        // Keamanan: Pastikan pengguna hanya bisa mengedit fotonya sendiri
+        if (Auth::user()->role !== 'admin' && $photo->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validasi input
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+        ]);
+
+        // Update judul di database
+        $photo->update([
+            'title' => $request->title,
+        ]);
+
+        // Kembali ke halaman yang sama dengan pesan sukses
+        return redirect()->back()->with('title_success', 'Judul berhasil disimpan!');
+    }
+
     public function capture(Request $request)
     {
         try {
@@ -41,10 +65,6 @@ class PhotoboothController extends Controller
             }
 
             $manager = new ImageManager(new Driver());
-
-            // ======================================================================
-            // ### PERBAIKAN LOGIKA UTAMA ADA DI SINI ###
-            // ======================================================================
 
             // 1. Jadikan gambar template sebagai kanvas dasar (background).
             $finalImage = $manager->read(Storage::disk('public')->path($template->image_path));

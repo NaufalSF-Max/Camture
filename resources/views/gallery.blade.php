@@ -25,7 +25,7 @@
                                 <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow group-hover:shadow-xl transition-shadow">
                                     <img src="{{ asset('storage/' . $photo->file_path) }}" 
                                          alt="Foto Camture tanggal {{ $photo->created_at->format('d M Y') }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                         class="w-full h-full object-contain group-hover:scale-105 transition-transform">
                                 </div>
                             </a>
                         @endforeach

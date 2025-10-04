@@ -15,6 +15,27 @@
                     <img src="{{ asset('storage/' . $photo->file_path) }}" alt="Hasil Foto Camture" class="w-full h-auto">
                 </div>
 
+                <div class="mt-8 max-w-md mx-auto">
+                    <form action="{{ route('photo.update_title', $photo) }}" method="POST" class="text-left">
+                        @csrf
+                        @method('PATCH')
+
+                        <label for="title" class="block font-medium text-sm text-gray-700">Beri Judul Fotomu</label>
+                        <div class="flex items-center gap-2 mt-1">
+                            <input type="text" id="title" name="title" 
+                                class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+                                value="{{ $photo->title }}"
+                                placeholder="Contoh: Liburan Seru!">
+                            <button type="submit" class="px-4 py-2 bg-gray-800 text-white text-xs font-semibold uppercase rounded-md hover:bg-gray-700">
+                                Simpan
+                            </button>
+                        </div>
+                        @if(session('title_success'))
+                            <p class="text-sm text-green-600 mt-2">{{ session('title_success') }}</p>
+                        @endif
+                    </form>
+                </div>
+                
                 <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a href="{{ asset('storage/' . $photo->file_path) }}" download="camture-photo.jpg"
                        class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">

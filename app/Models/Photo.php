@@ -19,5 +19,6 @@ class Photo extends Model
         'template_id',
         'file_path',
         'delete_at',
+        'title',
     ];
 }

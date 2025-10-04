@@ -12,7 +12,17 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
+            },
+            // Di sini kita menambahkan palet warna Camture
+            colors: {
+                'camture-green-dark': '#337357',
+                'camture-green-light': '#8D9F71',
+                'camture-pink-bg': '#FFDBE5',
+                'camture-rose': '#E27396',
+                'camture-rose-hover': '#ca6285',
+                'camture-beige': '#EADAB2',
+                'camture-peach': '#FFB4A2', // <-- TAMBAHKAN BARIS INI
             },
         },
     },
