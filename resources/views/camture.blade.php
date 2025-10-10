@@ -1,224 +1,303 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-camture-green-dark leading-tight">
             Camture Photobooth
         </h2>
     </x-slot>
 
+    {{-- Penambahan CSS kustom untuk filter yang lebih kompleks --}}
+    <style>
+        .filter-none { filter: none; }
+        .filter-grayscale { filter: grayscale(100%); }
+        .filter-sepia { filter: sepia(100%); }
+        .filter-invert { filter: invert(100%); }
+        .filter-bright { filter: brightness(1.3) contrast(1.1); }
+        .filter-vintage { filter: sepia(60%) contrast(1.2) brightness(90%) saturate(1.2); }
+        .filter-lomo { 
+            filter: contrast(1.4) saturate(1.4) sepia(30%); 
+            position: relative;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #EA9AB2; /* Amaranth Pink */
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            color: #E27396; /* Rose Pompadour */
+            background-color: white;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .filter-btn:hover {
+            background-color: #FFDBE5; /* Mimi Pink on hover */
+        }
+        .filter-btn.active-filter {
+            background-color: #E27396; /* Rose Pompadour */
+            color: white;
+            border-color: #E27396;
+        }
+        .camera-container::after { /* Efek Vignette untuk Lomo */
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0.5rem; /* sesuaikan dengan radius container */
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.7);
+            pointer-events: none; /* agar tidak mengganggu interaksi video */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .camera-container.vignette::after {
+            opacity: 1;
+        }
+        .flash-effect {
+            animation: flash 0.5s ease-out;
+        }
+        @keyframes flash {
+            0% { background-color: rgba(255, 255, 255, 0); }
+            50% { background-color: rgba(255, 255, 255, 0.8); }
+            100% { background-color: rgba(255, 255, 255, 0); }
+        }
+    </style>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div id="countdown-overlay" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
-                <p id="countdown-text" class="text-white font-bold text-9xl animate-ping"></p>
+
+            <!-- Overlay untuk Hitung Mundur -->
+            <div id="countdown-overlay" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                <span id="countdown-text" class="text-white font-bold text-9xl animate-ping"></span>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-2xl sm:rounded-lg p-8 flex flex-col md:flex-row gap-8">
+            <!-- Kontainer Utama Photobooth -->
+            <div class="bg-camture-pink-bg overflow-hidden shadow-2xl sm:rounded-2xl p-8 flex flex-col md:flex-row gap-8">
 
-                <div class="w-full md:w-1/2 flex items-center justify-center">
-                    <div id="camera-container">
-                        <video id="webcam-preview" autoplay playsinline></video>
+                <!-- Kolom Kiri: Preview Kamera -->
+                <div class="w-full md:w-2/3 flex flex-col items-center justify-center">
+                    <div id="camera-container" class="relative w-full max-w-2xl aspect-[4/3] rounded-lg overflow-hidden bg-camture-green-dark border-4 border-camture-rose shadow-lg transition-all duration-300">
+                        <video id="webcam-preview" class="w-full h-full object-cover" autoplay playsinline></video>
+                        <div id="flash-overlay" class="absolute inset-0 pointer-events-none"></div>
                     </div>
+                    <p id="status-text" class="font-medium text-center mt-4 text-camture-green-dark h-6"></p>
                 </div>
 
-                <div class="w-full md:w-1/2 flex flex-col">
+                <!-- Kolom Kanan: Kontrol & Hasil Jepretan -->
+                <div class="w-full md:w-1/3 flex flex-col">
                     
+                    <!-- Kontrol Awal -->
                     <div id="initial-controls">
-                        <p class="mb-2">Layout Terpilih: <strong>{{ $template->name }} ({{ $template->capture_slots }} foto)</strong></p>
-                        <input type="hidden" id="selected_template_id" value="{{ $template->id }}">
-                        <input type="hidden" id="capture_slots_count" value="{{ $template->capture_slots }}">
+                        <p class="text-camture-green-dark mb-4">Layout Terpilih: 
+                            <strong class="text-camture-rose font-bold">{{ $template->name }}</strong> ({{ $template->capture_slots }} foto)
+                        </p>
 
-                        <div class="mt-4">
-                            <label for="countdown_time" class="mr-2 font-medium text-gray-700">Waktu Mundur:</label>
-                            <select id="countdown_time" class="rounded-md border-gray-300 shadow-sm">
-                                <option value="3">3 detik</option>
-                                <option value="5">5 detik</option>
+                        <div class="mb-4">
+                            <label for="countdown-time" class="block font-medium text-camture-green-dark mb-1">Waktu Mundur</label>
+                            <select id="countdown-time" class="w-full rounded-md border-camture-beige shadow-sm focus:border-camture-rose focus:ring focus:ring-camture-rose focus:ring-opacity-50 text-camture-green-dark">
+                                <option value="3">3 Detik</option>
+                                <option value="5" selected>5 Detik</option>
+                                <option value="10">10 Detik</option>
                             </select>
                         </div>
-                        <div class="mt-6">
-                            <p class="mb-2 font-medium text-gray-700">Pilih Filter:</p>
+                        
+                        <div>
+                            <label class="block font-medium text-camture-green-dark mb-2">Pilih Filter</label>
                             <div id="filter-options" class="flex flex-wrap justify-start gap-2">
-                                <button data-filter="none" class="filter-btn active">No Filter</button>
-                                <button data-filter="grayscale(100%)" class="filter-btn">B&W</button>
-                                <button data-filter="sepia(100%)" class="filter-btn">Sepia</button>
-                                <button data-filter="saturate(2)" class="filter-btn">Vivid</button>
-                                <button data-filter="contrast(150%)" class="filter-btn">Noir</button>
+                                <button class="filter-btn active-filter" data-filter="filter-none">Normal</button>
+                                <button class="filter-btn" data-filter="filter-bright">Cerah</button>
+                                <button class="filter-btn" data-filter="filter-vintage">Vintage</button>
+                                <button class="filter-btn" data-filter="filter-lomo">Lomo</button>
+                                <button class="filter-btn" data-filter="filter-grayscale">B&W</button>
+                                <button class="filter-btn" data-filter="filter-sepia">Sepia</button>
+                                <button class="filter-btn" data-filter="filter-invert">Invert</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="preview-panel" class="hidden">
-                        <h3 class="font-bold text-lg mb-4">Hasil Jepretan:</h3>
-                        <div id="preview-thumbnails" class="grid grid-cols-2 gap-4">
-                            </div>
+                    <!-- Panel Hasil Jepretan -->
+                    <div id="preview-panel" class="mt-6 flex-grow">
+                        <h3 class="font-bold text-lg text-camture-rose">Hasil Jepretan:</h3>
+                        <div id="preview-thumbnails" class="grid grid-cols-2 gap-4 mt-2">
+                            {{-- Thumbnails akan ditambahkan di sini oleh JavaScript --}}
+                        </div>
                     </div>
 
-                    <div class="mt-auto pt-6">
-                        <button id="start-capture-btn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-lg transition-colors text-xl shadow">
-                            Start Capture ({{ $template->capture_slots }} foto)
+                    <!-- Tombol Aksi -->
+                    <div class="mt-auto pt-6 text-center">
+                        <button id="start-capture-btn" class="w-full bg-gradient-to-r from-camture-beige to-camture-rose text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 text-xl shadow-lg hover:shadow-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Mulai Sesi Foto!
                         </button>
-                        <p id="status-text" class="text-center mt-4 text-gray-600 font-medium"></p>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <canvas id="hidden-canvas" class="hidden"></canvas>
-
-    <style>
-        #camera-container {
-            width: 100%;
-            max-width: 480px; 
-            aspect-ratio: 1 / 1; 
-            border-radius: 0.5rem;
-            overflow: hidden;
-            background-color: #111827; 
-            border: 4px solid #e5e7eb;
-        }
-        #webcam-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .filter-btn { padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 20px; cursor: pointer; background-color: white; font-size: 14px; }
-        .filter-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-    </style>
-
     @push('scripts')
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    
-        // Inisialisasi semua elemen yang dibutuhkan
-        const webcamPreview = document.getElementById('webcam-preview');
-        const startCaptureBtn = document.getElementById('start-capture-btn');
-        const hiddenCanvas = document.getElementById('hidden-canvas');
-        const filterOptions = document.getElementById('filter-options');
-        const countdownOverlay = document.getElementById('countdown-overlay');
-        const countdownText = document.getElementById('countdown-text');
-        const initialControls = document.getElementById('initial-controls');
-        const previewPanel = document.getElementById('preview-panel');
-        const previewThumbnails = document.getElementById('preview-thumbnails');
-        const statusText = document.getElementById('status-text');
-        
-        const ctx = hiddenCanvas.getContext('2d');
-        let capturedFrames = [];
-
-        const delay = ms => new Promise(res => setTimeout(res, ms));
-
-        async function startWebcam() {
-            if (!webcamPreview) {
-                console.error("Elemen video #webcam-preview tidak ditemukan!");
-                return;
-            }
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                webcamPreview.srcObject = stream;
-                webcamPreview.onloadedmetadata = () => {
-                    hiddenCanvas.width = webcamPreview.videoWidth;
-                    hiddenCanvas.height = webcamPreview.videoHeight;
-                };
-            } catch (err) {
-                console.error("Error accessing webcam:", err);
-                alert("Tidak bisa mengakses kamera.");
-            }
-        }
-
-        function applyFilter(filterValue) {
-            webcamPreview.style.filter = filterValue;
-        }
-
-        async function startCaptureSequence() {
-            startCaptureBtn.disabled = true;
-            initialControls.classList.add('hidden'); // Sembunyikan kontrol awal
-            previewPanel.classList.remove('hidden'); // Tampilkan panel preview
-            previewThumbnails.innerHTML = ''; // Kosongkan preview sebelumnya
+        document.addEventListener('DOMContentLoaded', function() {
+            // === DOM ELEMENTS ===
+            const webcamPreview = document.getElementById('webcam-preview');
+            const startCaptureBtn = document.getElementById('start-capture-btn');
+            const countdownOverlay = document.getElementById('countdown-overlay');
+            const countdownText = document.getElementById('countdown-text');
+            const statusText = document.getElementById('status-text');
+            const filterOptions = document.getElementById('filter-options');
+            const previewThumbnails = document.getElementById('preview-thumbnails');
+            const flashOverlay = document.getElementById('flash-overlay');
+            const cameraContainer = document.getElementById('camera-container');
             
-            const slots = parseInt(document.getElementById('capture_slots_count').value);
-            const countdownTime = parseInt(document.getElementById('countdown_time').value);
-            capturedFrames = [];
+            // === STATE VARIABLES ===
+            let stream;
+            let currentFilter = 'filter-none';
+            const CAPTURE_SLOTS = {{ $template->capture_slots }};
+            let capturedImages = [];
+            let captureCount = 0;
 
-            for (let i = 0; i < slots; i++) {
-                statusText.innerText = `Bersiap untuk foto ${i + 1}...`;
-                countdownOverlay.classList.remove('hidden');
-                for (let j = countdownTime; j > 0; j--) {
-                    countdownText.innerText = j;
-                    await delay(1000);
+            // === INITIALIZE WEBCAM ===
+            async function initWebcam() {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+                    webcamPreview.srcObject = stream;
+                    statusText.textContent = "Kamera siap!";
+                } catch (err) {
+                    console.error("Error accessing webcam: ", err);
+                    statusText.textContent = "Error: Tidak dapat mengakses kamera.";
+                    startCaptureBtn.disabled = true;
                 }
-                countdownText.innerText = 'SMILE!';
-                await delay(500);
-                
-                ctx.filter = webcamPreview.style.filter;
-                ctx.drawImage(webcamPreview, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-                const imageDataUrl = hiddenCanvas.toDataURL('image/jpeg');
-                capturedFrames.push(imageDataUrl);
+            }
 
-                // TAMBAHKAN THUMBNAIL KE PANEL PREVIEW (DENGAN PEMBUNGKUS)
+            // === FILTER LOGIC ===
+            filterOptions.addEventListener('click', function(e) {
+                if (e.target.classList.contains('filter-btn')) {
+                    const filter = e.target.dataset.filter;
+                    
+                    // Remove previous filter class from video
+                    webcamPreview.classList.remove(currentFilter);
+                    
+                    // Remove active style from all buttons
+                    filterOptions.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
+                    
+                    // Add new filter and active style
+                    currentFilter = filter;
+                    webcamPreview.classList.add(currentFilter);
+                    e.target.classList.add('active-filter');
+
+                    // Add/Remove Vignette effect for Lomo
+                    if (filter === 'filter-lomo') {
+                        cameraContainer.classList.add('vignette');
+                    } else {
+                        cameraContainer.classList.remove('vignette');
+                    }
+                }
+            });
+
+            // === CAPTURE PROCESS ===
+            startCaptureBtn.addEventListener('click', startCaptureProcess);
+
+            function startCaptureProcess() {
+                startCaptureBtn.disabled = true;
+                startCaptureBtn.textContent = 'Bersiap...';
+                captureCount = 0;
+                capturedImages = [];
+                previewThumbnails.innerHTML = ''; // Clear previous thumbnails
+                takePhotoLoop();
+            }
+
+            function takePhotoLoop() {
+                if (captureCount >= CAPTURE_SLOTS) {
+                    statusText.textContent = 'Sesi selesai! Mengarahkan ke halaman hasil...';
+                    // Di sini kita akan mengirim data ke server
+                    saveAndRedirect();
+                    return;
+                }
+
+                captureCount++;
+                const countdownTime = parseInt(document.getElementById('countdown-time').value, 10);
+                
+                statusText.textContent = `Pose ke-${captureCount} dari ${CAPTURE_SLOTS}...`;
+                
+                let count = countdownTime;
+                countdownOverlay.classList.remove('hidden');
+                countdownText.textContent = count;
+                
+                const countdownInterval = setInterval(() => {
+                    count--;
+                    countdownText.textContent = count > 0 ? count : '📸';
+                    if (count <= 0) {
+                        clearInterval(countdownInterval);
+                        captureImage();
+                        setTimeout(() => {
+                            countdownOverlay.classList.add('hidden');
+                            // Jeda sebelum foto berikutnya
+                            setTimeout(takePhotoLoop, 2000); 
+                        }, 1000);
+                    }
+                }, 1000);
+            }
+
+            function captureImage() {
+                flashOverlay.classList.add('flash-effect');
+                setTimeout(() => flashOverlay.classList.remove('flash-effect'), 500);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = webcamPreview.videoWidth;
+                canvas.height = webcamPreview.videoHeight;
+                const ctx = canvas.getContext('2d');
+                
+                // Terapkan filter ke canvas
+                ctx.filter = window.getComputedStyle(webcamPreview).filter;
+                ctx.drawImage(webcamPreview, 0, 0, canvas.width, canvas.height);
+                
+                const dataUrl = canvas.toDataURL('image/jpeg');
+                capturedImages.push(dataUrl);
+
+                // Tampilkan thumbnail
+                const thumb = document.createElement('img');
+                thumb.src = dataUrl;
+                thumb.className = 'w-full h-full object-cover rounded-md';
                 const thumbWrapper = document.createElement('div');
-                thumbWrapper.className = 'aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md';
-
-                const img = document.createElement('img');
-                img.src = imageDataUrl;
-                img.className = 'w-full h-full object-cover';
-
-                thumbWrapper.appendChild(img);
+                thumbWrapper.className = 'aspect-square bg-camture-pink-bg rounded-lg overflow-hidden shadow-md p-1';
+                thumbWrapper.appendChild(thumb);
                 previewThumbnails.appendChild(thumbWrapper);
-                
-                countdownOverlay.classList.add('hidden');
-                statusText.innerText = `Foto ${i + 1} dari ${slots} terambil...`;
-                await delay(1000);
             }
-            
-            statusText.innerText = "Mengirim data ke server...";
-            sendDataToServer();
-        }
-        
-        async function sendDataToServer() {
-            const templateId = document.getElementById('selected_template_id').value;
 
-            try {
-                const response = await fetch("{{ route('camture.capture') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        template_id: templateId,
-                        frames: capturedFrames
-                    })
-                });
+            // === SAVE AND REDIRECT ===
+            async function saveAndRedirect() {
+                try {
+                    const response = await fetch('{{ route("camture.capture") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            images: capturedImages,
+                            template_id: {{ $template->id }}
+                        })
+                    });
 
-                if (!response.ok) throw new Error('Server error');
-                const result = await response.json();
-                
-                // Mengarahkan langsung ke halaman hasil yang baru
-                window.location.href = result.show_url;
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
 
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat memproses foto.');
-                
-                const slotsCount = document.getElementById('capture_slots_count').value;
-                startCaptureBtn.disabled = false;
-                startCaptureBtn.innerText = `Start Capture (${slotsCount} foto)`;
-                // Kembalikan UI ke keadaan semula jika gagal
-                previewPanel.classList.add('hidden');
-                initialControls.classList.remove('hidden');
-                statusText.innerText = "";
+                    const result = await response.json();
+
+                    if (result.success && result.redirect_url) {
+                        window.location.href = result.redirect_url;
+                    } else {
+                        statusText.textContent = 'Error: ' + (result.message || 'Gagal menyimpan foto.');
+                        startCaptureBtn.disabled = false;
+                        startCaptureBtn.textContent = 'Coba Lagi';
+                    }
+                } catch (error) {
+                    console.error('Error saving photos:', error);
+                    statusText.textContent = 'Error: Terjadi kesalahan saat menyimpan.';
+                    startCaptureBtn.disabled = false;
+                    startCaptureBtn.textContent = 'Coba Lagi';
+                }
             }
-        }
-        
-        startCaptureBtn.addEventListener('click', startCaptureSequence);
-        
-        filterOptions.addEventListener('click', (e) => {
-            if (e.target.classList.contains('filter-btn')) {
-                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                applyFilter(e.target.dataset.filter);
-            }
+
+            // === START ===
+            initWebcam();
         });
-        
-        startWebcam();
-    });
     </script>
     @endpush
 </x-app-layout>

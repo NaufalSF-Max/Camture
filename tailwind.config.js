@@ -22,7 +22,7 @@ export default {
                 'camture-rose': '#E27396',
                 'camture-rose-hover': '#ca6285',
                 'camture-beige': '#EADAB2',
-                'camture-peach': '#FFB4A2', // <-- TAMBAHKAN BARIS INI
+                'camture-peach': '#FFB4A2',
             },
         },
     },

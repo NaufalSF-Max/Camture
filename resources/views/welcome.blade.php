@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Camture - Abadikan Momenmu!</title>
 
-    {{-- KODE CDN DAN STYLE INLINE YANG BENTROK SUDAH DIHAPUS DARI SINI --}}
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,50 +15,8 @@
 
     <div class="flex flex-col min-h-screen">
 
-        <header class="bg-camture-green-dark text-white shadow-md sticky top-0 z-50">
-            <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-                <a href="/" class="text-2xl font-bold flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span>Cam<span class="text-camture-rose">ture</span></span>
-                </a>
-        
-                <ul class="hidden md:flex items-center space-x-8 font-medium text-sm">
-                    <li><a href="#" class="hover:text-gray-300 transition duration-300">Home</a></li>
-                    <li><a href="#" class="hover:text-gray-300 transition duration-300">Fitur</a></li>
-                    <li><a href="{{ route('photo.gallery') }}" class="hover:text-gray-300 transition duration-300">Galeri</a></li>
-                    <li><a href="#" class="hover:text-gray-300 transition duration-300">Paket</a></li>
-                    <li><a href="#" class="hover:text-gray-300 transition duration-300">Hubungi Kami</a></li>
-                </ul>
-        
-                @if (Route::has('login'))
-                    <div class="hidden md:flex items-center space-x-4">
-                        @auth
-                            <a href="{{ url('/layouts') }}" class="px-6 py-2 bg-white text-camture-green-dark rounded-md font-semibold hover:bg-gray-200 transition duration-300 text-sm shadow">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="px-6 py-2 border border-white rounded-md font-semibold hover:bg-white hover:text-camture-green-dark transition duration-300 text-sm">
-                                Login
-                            </a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="px-6 py-2 bg-gradient-to-r from-camture-rose to-camture-peach text-white rounded-md font-semibold hover:opacity-90 transition duration-300 text-sm shadow-md">
-                                    Daftar Gratis!
-                                </a>
-                            @endif
-                        @endauth
-                    </div>
-                @endif
-                
-                <div class="md:hidden">
-                    <button class="text-white focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                    </button>
-                </div>
-            </nav>
-        </header>
+        {{-- PERUBAHAN: Memanggil file navigasi terpusat --}}
+        @include('layouts.navigation')
 
         <main class="flex-grow">
             <section class="container mx-auto px-6 py-16 md:py-24">

@@ -51,13 +51,14 @@ class PhotoboothController extends Controller
     public function capture(Request $request)
     {
         try {
+            // ### PERBAIKAN DI SINI: 'frames' diubah menjadi 'images' ###
             $validated = $request->validate([
                 'template_id' => 'required|exists:templates,id',
-                'frames' => 'required|array',
+                'images' => 'required|array', // Diubah dari 'frames'
             ]);
 
             $template = Template::find($validated['template_id']);
-            $framesData = $validated['frames'];
+            $framesData = $validated['images']; // Diubah dari 'frames'
             $slotPositionsPercent = json_decode($template->slot_positions, true);
 
             if (!$slotPositionsPercent || count($slotPositionsPercent) !== count($framesData)) {
@@ -66,16 +67,13 @@ class PhotoboothController extends Controller
 
             $manager = new ImageManager(new Driver());
 
-            // 1. Jadikan gambar template sebagai kanvas dasar (background).
             $finalImage = $manager->read(Storage::disk('public')->path($template->image_path));
             $templateWidth = $finalImage->width();
             $templateHeight = $finalImage->height();
             
-            // 2. Tempelkan setiap foto jepretan DI ATAS template.
             foreach ($framesData as $index => $frameData) {
                 $slotPercent = $slotPositionsPercent[$index];
 
-                // Hitung ukuran & posisi piksel yang sebenarnya berdasarkan persentase
                 $slotWidth = ($slotPercent['width'] / 100) * $templateWidth;
                 $slotHeight = ($slotPercent['height'] / 100) * $templateHeight;
                 $slotX = ($slotPercent['x'] / 100) * $templateWidth;
@@ -84,13 +82,10 @@ class PhotoboothController extends Controller
                 $base64_str = substr($frameData, strpos($frameData, ",") + 1);
                 $frameImage = $manager->read(base64_decode($base64_str));
                 
-                // Ubah ukuran foto jepretan agar pas dengan ukuran slot
                 $frameImage->resize(round($slotWidth), round($slotHeight));
                 
-                // Tempatkan foto jepretan di posisi x dan y yang tepat DI ATAS template
                 $finalImage->place($frameImage, 'top-left', round($slotX), round($slotY));
             }
-            // ======================================================================
 
             $photoDirectory = 'photos';
             if (!Storage::disk('public')->exists($photoDirectory)) {
@@ -109,9 +104,10 @@ class PhotoboothController extends Controller
                 'delete_at' => now()->addDays(30),
             ]);
 
+            // ### PERBAIKAN DI SINI: Mengirim URL 'show' yang benar ###
             return response()->json([
-                'success'   => true,
-                'show_url'  => route('photo.show', $photo)
+                'success'       => true,
+                'redirect_url'  => route('photo.show', $photo) // Diubah dari 'show_url' agar cocok dengan JS baru
             ]);
 
         } catch (\Exception $e) {
