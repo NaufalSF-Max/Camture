@@ -1,4 +1,6 @@
 <x-guest-layout>
+    @section('title', 'Verify Email')
+
     <div class="text-center">
         <h2 class="text-2xl font-bold text-gray-800 mb-2">Verifikasi Email Anda</h2>
         <p class="mb-4 text-sm text-gray-600">

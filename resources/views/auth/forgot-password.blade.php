@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @section('title', 'Forgot Password')
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('password.email') }}">

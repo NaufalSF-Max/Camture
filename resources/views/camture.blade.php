@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Photobooth')
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-camture-green-dark leading-tight">
             Camture Photobooth

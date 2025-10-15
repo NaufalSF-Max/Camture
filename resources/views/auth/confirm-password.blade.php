@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @section('title', 'Confirm Password')
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 
