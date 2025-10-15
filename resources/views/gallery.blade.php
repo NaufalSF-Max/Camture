@@ -16,7 +16,7 @@
                         </svg>
                         <p class="text-lg mt-4 font-semibold text-camture-green-dark">Kamu belum memiliki foto.</p>
                         <p class="text-sm text-camture-green-light">Semua hasil jepretanmu akan muncul di sini.</p>
-                        <a href="{{ route('layouts.select') }}" class="mt-6 inline-flex items-center px-6 py-3 bg-gradient-to-r from-camture-peach to-camture-rose text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-transform hover:scale-105">
+                        <a href="{{ route('template.select') }}" class="mt-6 inline-flex items-center px-6 py-3 bg-gradient-to-r from-camture-peach to-camture-rose text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-transform hover:scale-105">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             Ayo Buat Foto Pertamamu!
                         </a>
@@ -25,7 +25,7 @@
                     {{-- Tampilan Grid jika ada foto --}}
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         @foreach ($photos as $photo)
-                            <a href="{{ route('photo.show', $photo) }}" class="group block text-center">
+                            <a href="{{ route('photo.result', $photo) }}" class="group block text-center">
                                 {{-- Card untuk setiap foto --}}
                                 <div class="aspect-square bg-white p-2 rounded-lg overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-300 border border-camture-rose border-opacity-30">
                                     <img src="{{ asset('storage/' . $photo->file_path) }}" 

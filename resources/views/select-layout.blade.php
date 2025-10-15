@@ -10,7 +10,7 @@
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                         @forelse ($templates as $template)
-                            <a href="{{ route('camture.show', $template) }}" class="group transition-all duration-300 ease-in-out">
+                            <a href="{{ route('camture.show', $template->id) }}" class="group transition-all duration-300 ease-in-out">
                                 <div class="bg-white rounded-2xl shadow-lg p-4 group-hover:shadow-2xl group-hover:scale-105 transform">
                                     <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 border-4 border-white shadow-inner">
                                         {{-- INI BAGIAN YANG DIPERBAIKI --}}

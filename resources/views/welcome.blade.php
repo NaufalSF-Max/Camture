@@ -29,7 +29,7 @@
                             Website photobooth interaktif dengan efek visual unik. Ciptakan kenangan unikmu sekarang!
                         </p>
                         <div class="mt-8 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                            <a href="{{ route('layouts.select') }}" class="px-8 py-3 bg-camture-rose text-white font-semibold rounded-full shadow-lg hover:bg-camture-rose-hover transition duration-300 transform hover:scale-105">
+                            <a href="{{ route('template.select') }}" class="px-8 py-3 bg-camture-rose text-white font-semibold rounded-full shadow-lg hover:bg-camture-rose-hover transition duration-300 transform hover:scale-105">
                                 Mulai Petualangan Fotomu!
                             </a>
                             <a href="{{ route('photo.gallery') }}" class="px-8 py-3 border-2 border-camture-rose text-camture-rose font-semibold rounded-full hover:bg-camture-rose hover:text-white transition duration-300">

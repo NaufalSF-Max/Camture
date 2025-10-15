@@ -17,11 +17,11 @@
                     <x-nav-link :href="route('welcome')" :active="request()->routeIs('welcome')" class="text-white">
                         Home
                     </x-nav-link>
-                    <x-nav-link :href="route('layouts.select')" :active="request()->routeIs('layouts.select')" class="text-white">
-                        Fitur
+                    <x-nav-link :href="route('template.select')" :active="request()->routeIs('template.select')">
+                        {{ __('Photobooth') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('photo.gallery')" :active="request()->routeIs('photo.gallery')" class="text-white">
-                        Galeri
+                    <x-nav-link :href="route('photo.gallery')" :active="request()->routeIs('photo.gallery')">
+                        {{ __('Gallery') }}
                     </x-nav-link>
                 </div>
             </div>
