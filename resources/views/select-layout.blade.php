@@ -1,35 +1,40 @@
 <x-app-layout>
-    @section('title', 'Layouts')
+    @section('title', 'Pilih Layout')
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-camture-pink-bg overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-8 text-center">
-                    <h3 class="text-3xl font-extrabold mb-2 text-camture-rose">Choose Your Layout</h3>
-                    <p class="text-camture-green-dark mb-10">Pilih layout untuk sesi fotomu. Setiap layout memiliki jumlah pose yang berbeda.</p>
-
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        @forelse ($templates as $template)
-                            <a href="{{ route('camture.show', $template->id) }}" class="group transition-all duration-300 ease-in-out">
-                                <div class="bg-white rounded-2xl shadow-lg p-4 group-hover:shadow-2xl group-hover:scale-105 transform">
-                                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4 border-4 border-white shadow-inner">
-                                        {{-- INI BAGIAN YANG DIPERBAIKI --}}
-                                        <img src="{{ asset('storage/' . $template->image_path) }}" 
-                                             alt="{{ $template->name }}" 
-                                             class="w-full h-full object-contain">
-                                    </div>
-                                    <h4 class="font-bold text-lg text-camture-green-dark">{{ $template->name }}</h4>
-                                    <p class="text-sm text-camture-green-light font-semibold">{{ $template->capture_slots }} foto</p>
-                                </div>
-                            </a>
-                        @empty
-                            <div class="col-span-full text-center py-16">
-                                <p class="text-lg text-camture-rose">Belum ada template yang tersedia.</p>
-                                <p class="text-sm text-camture-green-dark mt-2">Silakan hubungi admin untuk menambahkan template baru.</p>
-                            </div>
-                        @endforelse
-                    </div>
+            <div class="bg-camture-pink-bg overflow-hidden shadow-xl sm:rounded-2xl p-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-camture-rose">Pilih Layout Favoritmu</h2>
+                    <p class="mt-2 text-md text-camture-green-dark">Klik pada salah satu template untuk memulai sesi fotomu!</p>
                 </div>
+
+                @if($templates->isEmpty())
+                    <div class="text-center py-16">
+                         <p class="text-lg font-semibold text-camture-green-dark">Oops! Belum ada template yang tersedia.</p>
+                         <p class="text-sm text-camture-green-light">Admin sedang menyiapkannya, silakan kembali lagi nanti.</p>
+                    </div>
+                @else
+                    <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                        @foreach ($templates as $template)
+                            <a href="{{ route('camture.show', $template) }}" class="group block text-center">
+                                {{-- Card untuk setiap template --}}
+                                <div class="aspect-[3/4] bg-white p-2 rounded-lg overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-300 transform group-hover:-translate-y-2 border-2 border-transparent group-hover:border-camture-rose">
+                                    <img src="{{ asset('storage/' . $template->image_path) }}" 
+                                         alt="{{ $template->name }}" 
+                                         class="w-full h-full object-contain rounded-md">
+                                </div>
+                                {{-- Nama template --}}
+                                <p class="mt-3 text-sm font-semibold text-camture-green-dark group-hover:text-camture-rose transition-colors truncate">
+                                    {{ $template->name }}
+                                </p>
+                                <p class="text-xs text-camture-green-light">
+                                    {{ $template->capture_slots }} Slot Foto
+                                </p>
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>

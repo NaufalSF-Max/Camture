@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/result/{photo}/title', [PhotoboothController::class, 'updateTitle'])->name('photo.update_title');
     Route::get('/gallery', [PhotoboothController::class, 'myPhotos'])->name('photo.gallery'); // Dulu: photo.gallery
     Route::post('/result/{photo}/apply-stickers', [PhotoboothController::class, 'applyStickers'])->name('photo.applyStickers')->middleware('auth');
+    Route::delete('/result/{photo}', [PhotoboothController::class, 'destroyPhoto'])->name('photo.destroy');
 });
 
 // 3. GRUP ROUTE KHUSUS ADMIN

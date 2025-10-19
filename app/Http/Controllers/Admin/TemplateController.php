@@ -100,6 +100,20 @@ class TemplateController extends Controller
      */
     public function destroy(Template $template)
     {
-        // TODO: Buat logika untuk hapus
+        // Keamanan tambahan: Pastikan template ini tidak memiliki foto terkait sebelum dihapus
+        if ($template->photos()->count() > 0) {
+            return redirect()->route('admin.templates.index')
+                ->with('error', "Gagal! Template '{$template->name}' tidak dapat dihapus karena masih digunakan oleh foto-foto yang ada.");
+        }
+
+        // Langkah 1: Hapus file gambar dari folder storage
+        Storage::disk('public')->delete($template->image_path);
+
+        // Langkah 2: Hapus data template dari database
+        $template->delete();
+
+        // Langkah 3: Kembali ke halaman daftar dengan pesan sukses
+        return redirect()->route('admin.templates.index')
+            ->with('success', "Template '{$template->name}' berhasil dihapus secara permanen.");
     }
 }

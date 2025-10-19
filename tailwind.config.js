@@ -23,6 +23,15 @@ export default {
                 'camture-rose-hover': '#ca6285',
                 'camture-beige': '#EADAB2',
                 'camture-peach': '#FFB4A2',
+                'primary': '#E27396', // Alias untuk warna utama
+                'indigo': {
+                    '500': '#E27396', // Warna utama saat focus
+                    '600': '#ca6285', // Warna hover/active
+                },
+                 'blue': {
+                    '600': '#E27396',
+                    '700': '#ca6285',
+                 }
             },
         },
     },

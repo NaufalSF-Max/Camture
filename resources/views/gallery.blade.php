@@ -1,5 +1,5 @@
 <x-app-layout>
-    @section('title', 'Gallery')
+    @section('title', 'Galeri Foto Saya')
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -25,7 +25,8 @@
                     {{-- Tampilan Grid jika ada foto --}}
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         @foreach ($photos as $photo)
-                            <a href="{{ route('photo.result', $photo) }}" class="group block text-center">
+                            {{-- PENAMBAHAN 'group' DI SINI --}}
+                            <a href="{{ route('photo.result', $photo) }}" class="group block text-center transition-transform duration-300 hover:-translate-y-2">
                                 {{-- Card untuk setiap foto --}}
                                 <div class="aspect-square bg-white p-2 rounded-lg overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-300 border border-camture-rose border-opacity-30">
                                     <img src="{{ asset('storage/' . $photo->file_path) }}" 

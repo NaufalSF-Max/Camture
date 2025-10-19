@@ -13,16 +13,16 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 flex">
+            {{-- Navigasi Admin --}}
             @include('layouts.admin-navigation')
 
+            {{-- Konten Utama --}}
             <div class="flex-1 flex flex-col">
                 <header class="bg-white shadow-sm">
                     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                        <div>
-                            @isset($header)
-                                {{ $header }}
-                            @endisset
-                        </div>
+                        @isset($header)
+                            {{ $header }}
+                        @endisset
                         <div class="flex items-center space-x-4">
                             <span class="text-sm font-medium text-gray-600">Welcome, {{ Auth::user()->name }}</span>
                             <form method="POST" action="{{ route('logout') }}">

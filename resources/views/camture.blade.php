@@ -179,9 +179,17 @@
 
                     <!-- Tombol Aksi -->
                     <div class="mt-auto pt-6 text-center">
-                        <button id="start-capture-btn" class="w-full bg-gradient-to-r from-camture-beige to-camture-rose text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 text-xl shadow-lg hover:shadow-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <button id="start-capture-btn" class="w-full bg-camture-rose hover:bg-camture-rose-hover text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 text-xl shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
                             Mulai Sesi Foto!
                         </button>
+                        <div id="review-controls" class="hidden space-y-3">
+                        <button id="save-btn" class="w-full bg-camture-rose hover:bg-camture-rose-hover text-white font-bold py-3 px-6 rounded-lg text-xl shadow-lg">
+                            Simpan & Lanjutkan
+                        </button>
+                        <button id="retake-btn" type="button" class="w-full bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">
+                            Ulangi Sesi Foto
+                        </button>
+                    </div>
                     </div>
                 </div>
 
@@ -195,6 +203,9 @@
             // === DOM ELEMENTS ===
             const webcamPreview = document.getElementById('webcam-preview');
             const startCaptureBtn = document.getElementById('start-capture-btn');
+            const reviewControls = document.getElementById('review-controls'); 
+            const saveBtn = document.getElementById('save-btn');
+            const retakeBtn = document.getElementById('retake-btn'); 
             const countdownOverlay = document.getElementById('countdown-overlay');
             const countdownText = document.getElementById('countdown-text');
             const statusText = document.getElementById('status-text');
@@ -253,6 +264,25 @@
             // === CAPTURE PROCESS ===
             startCaptureBtn.addEventListener('click', startCaptureProcess);
 
+            saveBtn.addEventListener('click', () => {
+                statusText.textContent = 'Menyimpan...';
+                saveAndRedirect();
+            });
+
+            retakeBtn.addEventListener('click', () => {
+                // Reset semua state
+                capturedImages = [];
+                captureCount = 0;
+                previewThumbnails.innerHTML = '';
+                statusText.textContent = 'Kamera siap!';
+                
+                // Tampilkan/sembunyikan tombol yang benar
+                reviewControls.classList.add('hidden');
+                startCaptureBtn.classList.remove('hidden');
+                startCaptureBtn.disabled = false;
+                startCaptureBtn.textContent = 'Mulai Sesi Foto!';
+            });
+
             function startCaptureProcess() {
                 startCaptureBtn.disabled = true;
                 startCaptureBtn.textContent = 'Bersiap...';
@@ -264,9 +294,9 @@
 
             function takePhotoLoop() {
                 if (captureCount >= CAPTURE_SLOTS) {
-                    statusText.textContent = 'Sesi selesai! Mengarahkan ke halaman hasil...';
-                    // Di sini kita akan mengirim data ke server
-                    saveAndRedirect();
+                    statusText.textContent = 'Sesi selesai! Silakan review fotomu.';
+                    startCaptureBtn.classList.add('hidden'); // Sembunyikan tombol mulai
+                    reviewControls.classList.remove('hidden'); // Tampilkan tombol review
                     return;
                 }
 

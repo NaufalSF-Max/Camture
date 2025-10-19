@@ -175,4 +175,24 @@ class PhotoboothController extends Controller
 
         return redirect()->route('photo.result', $photo)->with('success', 'Stiker berhasil ditambahkan!');
     }
+
+    /**
+     * METHOD Menghapus foto dari database dan storage.
+     */
+    public function destroyPhoto(Photo $photo)
+    {
+        // Keamanan: Pastikan hanya pemilik foto atau admin yang bisa menghapus.
+        if (Auth::user()->role !== 'admin' && $photo->user_id !== Auth::id()) {
+            abort(403, 'Aksi tidak diizinkan.');
+        }
+
+        // Langkah 1: Hapus file gambar dari storage.
+        Storage::disk('public')->delete($photo->file_path);
+
+        // Langkah 2: Hapus record foto dari database.
+        $photo->delete();
+
+        // Langkah 3: Arahkan pengguna kembali ke galeri dengan pesan sukses.
+        return redirect()->route('photo.gallery')->with('success', 'Foto berhasil dihapus secara permanen.');
+    }
 }
