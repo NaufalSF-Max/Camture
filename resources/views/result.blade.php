@@ -72,6 +72,9 @@
 
                             <div class="space-y-3">
                                 <a href="{{ asset('storage/' . $photo->file_path) }}" download="{{ $photo->title ?? 'camture-photo' }}.jpg" class="w-full text-center flex items-center justify-center px-4 py-3 bg-camture-rose text-white rounded-lg hover:bg-camture-rose-hover font-bold shadow-md transition transform hover:scale-105">Download Foto</a>
+                                <button id="share-btn" class="w-full text-center flex items-center justify-center px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-bold shadow-md transition transform hover:scale-105">
+                                    Bagikan
+                                </button>
                                 <button id="edit-mode-btn" class="w-full text-center flex items-center justify-center px-4 py-3 bg-camture-green-dark text-white rounded-lg hover:bg-opacity-90 font-bold shadow-md transition transform hover:scale-105">Hias dengan Stiker</button>
                                 <div class="pt-4 border-t border-gray-200">
                                     <form action="{{ route('photo.destroy', $photo) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto ini secara permanen? Tindakan ini tidak bisa dibatalkan.');">
@@ -102,14 +105,44 @@
     </div>
 
     @push('scripts')
-    {{-- MENGEMBALIKAN LOGIKA JAVASCRIPT KE VERSI STABIL ANDA --}}
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const editModeBtn = document.getElementById('edit-mode-btn');
         const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const editorWrapper = document.getElementById('editor-wrapper');
         const canvasWrapper = document.querySelector('.canvas-wrapper');
+        const shareBtn = document.getElementById('share-btn');
+        const photoUrl = '{{ asset('storage/' . $photo->file_path) }}';
+        const photoTitle = '{{ $photo->title ?? "Foto dari Camture" }}';
+        const pageUrl = '{{ route('photo.result', $photo) }}';
         
+        // Cek apakah browser mendukung Web Share API
+        if (navigator.share) {
+            shareBtn.addEventListener('click', async () => {
+                try {
+                    // Ambil file gambar dari server
+                    const response = await fetch(photoUrl);
+                    const blob = await response.blob();
+                    const file = new File([blob], `${photoTitle}.jpg`, { type: blob.type });
+
+                    // Buka dialog sharing
+                    await navigator.share({
+                        title: photoTitle,
+                        text: 'Lihat fotoku yang dibuat di Camture!',
+                        url: pageUrl, // URL ini akan dibagikan jika aplikasi target mendukungnya
+                        files: [file],
+                    });
+                    console.log('Foto berhasil dibagikan');
+                } catch (error) {
+                    console.error('Gagal membagikan:', error);
+                }
+            });
+        } else {
+            // Jika browser tidak mendukung, sembunyikan tombolnya agar tidak membingungkan
+            shareBtn.style.display = 'none';
+            console.log('Web Share API tidak didukung di browser ini.');
+        }
+
         let canvas;
 
         const stickerSources = [
