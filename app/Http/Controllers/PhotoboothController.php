@@ -51,14 +51,14 @@ class PhotoboothController extends Controller
     public function capture(Request $request)
     {
         try {
-            // ### PERBAIKAN DI SINI: 'frames' diubah menjadi 'images' ###
+            // PERBAIKAN A: Mengubah 'frames' menjadi 'images' agar cocok dengan data dari browser
             $validated = $request->validate([
                 'template_id' => 'required|exists:templates,id',
-                'images' => 'required|array', // Diubah dari 'frames'
+                'images' => 'required|array',
             ]);
 
-            $template = Template::find($validated['template_id']);
-            $framesData = $validated['images']; // Diubah dari 'frames'
+            $template = Template::findOrFail($validated['template_id']);
+            $framesData = $validated['images'];
             $slotPositionsPercent = json_decode($template->slot_positions, true);
 
             if (!$slotPositionsPercent || count($slotPositionsPercent) !== count($framesData)) {
@@ -67,13 +67,22 @@ class PhotoboothController extends Controller
 
             $manager = new ImageManager(new Driver());
 
-            $finalImage = $manager->read(Storage::disk('public')->path($template->image_path));
-            $templateWidth = $finalImage->width();
-            $templateHeight = $finalImage->height();
-            
+            // ======================================================================
+            // ### LOGIKA FINAL: FOTO DI BELAKANG TEMPLATE ###
+            // ======================================================================
+
+            // 1. Muat gambar template HANYA untuk mendapatkan ukurannya.
+            $templateImage = $manager->read(Storage::disk('public')->path($template->image_path));
+            $templateWidth = $templateImage->width();
+            $templateHeight = $templateImage->height();
+
+            // 2. Buat kanvas KOSONG seukuran template. Ini akan menjadi lapisan foto kita.
+            $finalImage = $manager->create($templateWidth, $templateHeight);
+
+            // 3. Loop dan "lukis" setiap foto jepretan ke kanvas kosong.
+            //    Logika resize dan posisi di sini 100% sama dengan kode referensi Anda.
             foreach ($framesData as $index => $frameData) {
                 $slotPercent = $slotPositionsPercent[$index];
-
                 $slotWidth = ($slotPercent['width'] / 100) * $templateWidth;
                 $slotHeight = ($slotPercent['height'] / 100) * $templateHeight;
                 $slotX = ($slotPercent['x'] / 100) * $templateWidth;
@@ -81,33 +90,36 @@ class PhotoboothController extends Controller
 
                 $base64_str = substr($frameData, strpos($frameData, ",") + 1);
                 $frameImage = $manager->read(base64_decode($base64_str));
-                
+
                 $frameImage->resize(round($slotWidth), round($slotHeight));
                 
+                // Tempatkan foto ke kanvas KOSONG, bukan ke template.
                 $finalImage->place($frameImage, 'top-left', round($slotX), round($slotY));
             }
 
-            $photoDirectory = 'photos';
-            if (!Storage::disk('public')->exists($photoDirectory)) {
-                Storage::disk('public')->makeDirectory($photoDirectory);
-            }
-
-            $fileName = 'camture-'. uniqid() . '.jpg';
-            $savePath = Storage::disk('public')->path($photoDirectory . '/' . $fileName);
+            // 4. Setelah kanvas foto selesai, tumpuk gambar template di lapisan PALING ATAS.
+            $finalImage->place($templateImage, 'top-left', 0, 0);
             
-            $finalImage->toJpeg()->save($savePath);
+            // ======================================================================
 
+            $photoDirectory = 'photos';
+            $savePath = $photoDirectory . '/camture-' . uniqid() . '.jpg';
+            
+            $finalImage->toJpeg()->save(Storage::disk('public')->path($savePath));
+
+            // PERBAIKAN B: Menambahkan 'title' untuk mengatasi error database
             $photo = Photo::create([
                 'user_id' => Auth::id(),
                 'template_id' => $template->id,
-                'file_path' => $photoDirectory . '/' . $fileName,
+                'file_path' => $savePath,
                 'delete_at' => now()->addDays(30),
+                'title' => 'Untitled Photo',
             ]);
-
-            // ### PERBAIKAN DI SINI: Mengirim URL 'show' yang benar ###
+            
+            // PERBAIKAN C: Menggunakan nama route yang benar ('photo.result')
             return response()->json([
                 'success'       => true,
-                'redirect_url'  => route('photo.show', $photo) // Diubah dari 'show_url' agar cocok dengan JS baru
+                'redirect_url'  => route('photo.result', $photo) 
             ]);
 
         } catch (\Exception $e) {
