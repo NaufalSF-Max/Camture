@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateController extends Controller
 {
@@ -84,15 +85,46 @@ class TemplateController extends Controller
      */
     public function edit(Template $template)
     {
-        // TODO: Buat halaman edit
+        // Cek apakah template sudah digunakan oleh foto
+        $isUsed = $template->photos()->exists();
+
+        return view('admin.templates.edit', compact('template', 'isUsed'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui template di database.
      */
     public function update(Request $request, Template $template)
     {
-        // TODO: Buat logika untuk update
+        // Cek apakah template sudah digunakan
+        $isUsed = $template->photos()->exists();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // Validasi lain hanya jika template belum digunakan
+            'image' => $isUsed ? 'nullable' : 'sometimes|image|mimes:png',
+            'slot_positions' => 'required|json',
+            'capture_slots' => 'required|integer|min:0',
+        ]);
+
+        $template->name = $request->name;
+
+        // Hanya perbarui gambar & slot jika template belum digunakan
+        if (!$isUsed) {
+            $template->slot_positions = $request->slot_positions;
+            $template->capture_slots = $request->capture_slots;
+
+            if ($request->hasFile('image')) {
+                // Hapus gambar lama
+                Storage::disk('public')->delete($template->image_path);
+                // Simpan gambar baru
+                $template->image_path = $request->file('image')->store('templates', 'public');
+            }
+        }
+
+        $template->save();
+
+        return redirect()->route('admin.templates.index')->with('success', 'Template berhasil diperbarui.');
     }
 
     /**

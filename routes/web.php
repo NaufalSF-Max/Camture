@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PhotoboothController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\UserController;
 use App\Models\User;
 use App\Models\Template;
 use App\Models\Photo;
@@ -49,6 +50,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     })->name('dashboard');
     Route::resource('templates', TemplateController::class);
     Route::patch('templates/{template}/toggle', [TemplateController::class, 'toggleStatus'])->name('templates.toggleStatus');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
 
 // 4. ROUTE OTENTIKASI BAWAAN LARAVEL
