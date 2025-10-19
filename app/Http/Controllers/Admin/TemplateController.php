@@ -56,6 +56,22 @@ class TemplateController extends Controller
     }
 
     /**
+     * METHOD Untuk mengubah status aktif/nonaktif template.
+     */
+    public function toggleStatus(Template $template)
+    {
+        // Membalik nilai boolean: jika true menjadi false, jika false menjadi true
+        $template->is_active = !$template->is_active;
+        $template->save();
+
+        // Tentukan pesan notifikasi berdasarkan status baru
+        $status = $template->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        // Kembali ke halaman daftar template dengan pesan sukses
+        return redirect()->route('admin.templates.index')->with('success', "Template '{$template->name}' berhasil {$status}.");
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(Template $template)

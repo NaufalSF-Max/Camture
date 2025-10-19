@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PhotoboothController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Models\User;
+use App\Models\Template;
+use App\Models\Photo;
 
 // 1. ROUTE PUBLIK
 Route::get('/', function () {
@@ -30,8 +33,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // 3. GRUP ROUTE KHUSUS ADMIN
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function() { return view('admin.dashboard'); })->name('dashboard');
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard', [
+            'userCount' => User::count(),
+            'photoCount' => Photo::count(),
+            'activeTemplateCount' => Template::where('is_active', true)->count(),
+            'recentTemplates' => Template::latest()->take(5)->get(),
+        ]);
+    })->name('dashboard');
     Route::resource('templates', TemplateController::class);
+    Route::patch('templates/{template}/toggle', [TemplateController::class, 'toggleStatus'])->name('templates.toggleStatus');
 });
 
 // 4. ROUTE OTENTIKASI BAWAAN LARAVEL
