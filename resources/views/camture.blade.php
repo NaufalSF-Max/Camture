@@ -14,6 +14,39 @@
         .filter-invert { filter: invert(100%); }
         .filter-bright { filter: brightness(1.3) contrast(1.1); }
         .filter-vintage { filter: sepia(60%) contrast(1.2) brightness(90%) saturate(1.2); }
+        .filter-saturate { filter: saturate(200%); }
+        .filter-hue-rotate { filter: hue-rotate(90deg); }
+        .filter-contrast-high { filter: contrast(160%); }
+        .filter-nashville { filter: sepia(20%) contrast(150%) brightness(90%) hue-rotate(-15deg); }
+        /* 1. Gingham: Efek film klasik, sedikit pudar */
+        .filter-gingham { filter: contrast(90%) brightness(110%); }
+
+        /* 2. Clarendon: Mencerahkan dan meningkatkan warna biru */
+        .filter-clarendon { filter: contrast(120%) saturate(135%); }
+
+        /* 3. Dreamy: Efek lembut dengan sentuhan pink */
+        .camera-container.filter-dreamy::before {
+            background-color: #f3d7e2;
+            mix-blend-mode: screen; /* Kunci efeknya ada di sini */
+            opacity: 0.4;
+        }
+        .filter-dreamy { filter: brightness(110%) contrast(110%); }
+
+        /* 4. Neo Noir: Kontras tinggi dengan nuansa merah gelap */
+        .camera-container.filter-neo-noir::before {
+            background: linear-gradient(to top right, rgba(255, 0, 0, 0.4), rgba(0, 0, 255, 0.4));
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+        .filter-neo-noir { filter: grayscale(100%) contrast(150%) brightness(90%); }
+
+        /* 5. Sunrise: Efek hangat keemasan */
+        .camera-container.filter-sunrise::before {
+            background: linear-gradient(to bottom, #ffcda4, #ff93a2);
+            mix-blend-mode: overlay;
+            opacity: 0.5;
+        }
+        .filter-sunrise { filter: saturate(140%) contrast(110%); }
         .filter-lomo { 
             filter: contrast(1.4) saturate(1.4) sepia(30%); 
             position: relative;
@@ -35,6 +68,22 @@
             background-color: #E27396; /* Rose Pompadour */
             color: white;
             border-color: #E27396;
+        }
+        .camera-container {
+            /* Pastikan container ini relative agar overlay berfungsi */
+            position: relative; 
+        }
+        .camera-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none; /* Agar tidak menghalangi video */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
         .camera-container::after { /* Efek Vignette untuk Lomo */
             content: '';
@@ -107,6 +156,15 @@
                                 <button class="filter-btn" data-filter="filter-grayscale">B&W</button>
                                 <button class="filter-btn" data-filter="filter-sepia">Sepia</button>
                                 <button class="filter-btn" data-filter="filter-invert">Invert</button>
+                                <button class="filter-btn" data-filter="filter-saturate">Saturasi</button>
+                                <button class="filter-btn" data-filter="filter-hue-rotate">Warna-Warni</button>
+                                <button class="filter-btn" data-filter="filter-contrast-high">Kontras</button>
+                                <button class="filter-btn" data-filter="filter-nashville">Nashville</button>
+                                <button class="filter-btn" data-filter="filter-gingham">Gingham</button>
+                                <button class="filter-btn" data-filter="filter-clarendon">Clarendon</button>
+                                <button class="filter-btn" data-filter="filter-dreamy">Dreamy</button>
+                                <button class="filter-btn" data-filter="filter-neo-noir">Neo Noir</button>
+                                <button class="filter-btn" data-filter="filter-sunrise">Sunrise</button>
                             </div>
                         </div>
                     </div>
@@ -170,22 +228,24 @@
                 if (e.target.classList.contains('filter-btn')) {
                     const filter = e.target.dataset.filter;
                     
-                    // Remove previous filter class from video
-                    webcamPreview.classList.remove(currentFilter);
+                    // Hapus semua kelas filter sebelumnya dari video dan container
+                    webcamPreview.className = 'w-full h-full object-cover'; // Reset kelas video
+                    cameraContainer.classList.remove('vignette', 'filter-dreamy', 'filter-neo-noir', 'filter-sunrise'); // Hapus semua kelas overlay
                     
-                    // Remove active style from all buttons
+                    // Hapus style aktif dari semua tombol
                     filterOptions.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
                     
-                    // Add new filter and active style
+                    // Terapkan filter baru
                     currentFilter = filter;
                     webcamPreview.classList.add(currentFilter);
                     e.target.classList.add('active-filter');
 
-                    // Add/Remove Vignette effect for Lomo
+                    // Logika khusus untuk filter yang menggunakan overlay atau efek pada container
                     if (filter === 'filter-lomo') {
                         cameraContainer.classList.add('vignette');
-                    } else {
-                        cameraContainer.classList.remove('vignette');
+                    } else if (filter === 'filter-dreamy' || filter === 'filter-neo-noir' || filter === 'filter-sunrise') {
+                        // Untuk filter overlay, tambahkan kelas ke container, bukan hanya ke video
+                        cameraContainer.classList.add(filter);
                     }
                 }
             });

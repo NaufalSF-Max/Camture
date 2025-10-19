@@ -13,6 +13,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/terms-and-conditions', function () {
+    return view('terms');
+})->name('terms');
+
 // 2. GRUP ROUTE UNTUK PENGGUNA YANG SUDAH LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard & Profile
@@ -29,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/result/{photo}', [PhotoboothController::class, 'showResult'])->name('photo.result'); // Dulu: photo.show
     Route::patch('/result/{photo}/title', [PhotoboothController::class, 'updateTitle'])->name('photo.update_title');
     Route::get('/gallery', [PhotoboothController::class, 'myPhotos'])->name('photo.gallery'); // Dulu: photo.gallery
+    Route::post('/result/{photo}/apply-stickers', [PhotoboothController::class, 'applyStickers'])->name('photo.applyStickers')->middleware('auth');
 });
 
 // 3. GRUP ROUTE KHUSUS ADMIN

@@ -9,6 +9,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
@@ -26,17 +27,10 @@
             <main class="flex-grow">
                 {{ $slot }}
             </main>
-
-            <footer class="bg-camture-green-dark text-camture-pink-bg">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
-                    <p>Hak Cipta &copy; {{ date('Y') }} Camture. All rights reserved.</p>
-                    <div class="mt-2 space-x-4">
-                        <a href="#" class="hover:underline">TnC</a>
-                        <a href="#" class="hover:underline">Kebijakan Privasi</a>
-                    </div>
-                </div>
-            </footer>
         </div>
+
+        @include('layouts.partials.footer')
+        
         @stack('scripts')
     </body>
 </html>

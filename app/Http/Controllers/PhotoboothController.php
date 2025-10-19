@@ -153,4 +153,26 @@ class PhotoboothController extends Controller
 
         return view('gallery', ['photos' => $photos]);
     }
+
+    public function applyStickers(Request $request, Photo $photo)
+    {
+        // Keamanan: Pastikan hanya pemilik foto yang bisa mengedit
+        if ($photo->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'imageData' => 'required|string',
+        ]);
+
+        // Ambil data gambar base64
+        $imageData = $request->input('imageData');
+        $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
+        $imageData = base64_decode($imageData);
+
+        // Timpa file foto yang lama
+        Storage::disk('public')->put($photo->file_path, $imageData);
+
+        return redirect()->route('photo.result', $photo)->with('success', 'Stiker berhasil ditambahkan!');
+    }
 }

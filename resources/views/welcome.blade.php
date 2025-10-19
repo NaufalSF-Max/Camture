@@ -15,7 +15,6 @@
 
     <div class="flex flex-col min-h-screen">
 
-        {{-- PERUBAHAN: Memanggil file navigasi terpusat --}}
         @include('layouts.navigation')
 
         <main class="flex-grow">
@@ -39,15 +38,15 @@
                     </div>
                     <div class="relative flex justify-center items-center h-full mt-10 md:mt-0">
                         <div class="bg-white p-3 pb-8 shadow-xl transform -rotate-12 transition hover:rotate-0 hover:scale-110 z-10">
-                            <img src="{{ asset('images/home1.jpg') }}"  alt="Contoh Foto Photobooth 1" class="w-48 h-auto">
+                            <img src="{{ asset('images/home1.jpg') }}" alt="Contoh Foto Photobooth 1" class="w-48 h-auto">
                             <p class="text-center mt-2 text-sm text-gray-600 font-medium">@Camture</p>
                         </div>
                         <div class="bg-white p-3 pb-8 shadow-2xl transform rotate-3 transition hover:rotate-0 hover:scale-110 z-20">
-                            <img src="{{ asset('images/home2.jpg') }}"  alt="Contoh Foto Photobooth 2" class="w-56 h-auto">
+                            <img src="{{ asset('images/home2.jpg') }}" alt="Contoh Foto Photobooth 2" class="w-56 h-auto">
                             <p class="text-center mt-2 text-sm text-gray-600 font-medium">@Camture</p>
                         </div>
                         <div class="bg-white p-3 pb-8 shadow-xl transform rotate-12 transition hover:rotate-0 hover:scale-110 z-10">
-                            <img src="{{ asset('images/home3.jpg') }}"  alt="Contoh Foto Photobooth 3" class="w-48 h-auto">
+                            <img src="{{ asset('images/home3.jpg') }}" alt="Contoh Foto Photobooth 3" class="w-48 h-auto">
                             <p class="text-center mt-2 text-sm text-gray-600 font-medium">@Camture</p>
                         </div>
                     </div>
@@ -61,14 +60,9 @@
                 </div>
             </section>
         </main>
+        
+        @include('layouts.partials.footer')
 
-        <footer class="bg-white py-6">
-            <div class="container mx-auto px-6 flex justify-between items-center text-gray-600">
-                <p class="font-bold text-lg text-camture-green-dark">Camture</p>
-                <p class="text-sm">© {{ date('Y') }} Camture. All rights reserved.</p>
-                <div></div>
-            </div>
-        </footer>
     </div>
 </body>
 </html>
