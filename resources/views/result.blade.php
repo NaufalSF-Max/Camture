@@ -146,13 +146,26 @@
         let canvas;
 
         const stickerSources = [
-            '{{ asset('stickers/1.png') }}', '{{ asset('stickers/2.png') }}',
-            '{{ asset('stickers/3.png') }}', '{{ asset('stickers/4.png') }}',
-            '{{ asset('stickers/5.png') }}', '{{ asset('stickers/6.png') }}',
-            '{{ asset('stickers/7.png') }}', '{{ asset('stickers/8.png') }}',
-            '{{ asset('stickers/9.png') }}', '{{ asset('stickers/10.png') }}',
-            '{{ asset('stickers/11.png') }}', '{{ asset('stickers/12.png') }}',
-            '{{ asset('stickers/april.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday.png') }}', '{{ asset('stickers/wedding_pack/wedding.png') }}', '{{ asset('stickers/love_pack/love.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday1.png') }}', '{{ asset('stickers/wedding_pack/wedding1.png') }}', '{{ asset('stickers/love_pack/love1.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday2.png') }}', '{{ asset('stickers/wedding_pack/wedding2.png') }}', '{{ asset('stickers/love_pack/love2.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday3.png') }}', '{{ asset('stickers/wedding_pack/wedding3.png') }}', '{{ asset('stickers/love_pack/love3.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday4.png') }}', '{{ asset('stickers/wedding_pack/wedding4.png') }}', '{{ asset('stickers/love_pack/love4.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday5.png') }}', '{{ asset('stickers/wedding_pack/wedding5.png') }}', '{{ asset('stickers/love_pack/love5.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday6.png') }}', '{{ asset('stickers/wedding_pack/wedding6.png') }}', '{{ asset('stickers/love_pack/love6.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday7.png') }}', '{{ asset('stickers/wedding_pack/wedding7.png') }}', '{{ asset('stickers/love_pack/love7.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday8.png') }}', '{{ asset('stickers/wedding_pack/wedding8.png') }}', '{{ asset('stickers/love_pack/love8.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday9.png') }}', '{{ asset('stickers/wedding_pack/wedding9.png') }}', '{{ asset('stickers/love_pack/love9.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday10.png') }}', '{{ asset('stickers/wedding_pack/wedding10.png') }}', '{{ asset('stickers/love_pack/love10.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday11.png') }}', '{{ asset('stickers/wedding_pack/wedding11.png') }}', '{{ asset('stickers/love_pack/love11.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday12.png') }}', '{{ asset('stickers/wedding_pack/wedding12.png') }}', '{{ asset('stickers/love_pack/love12.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday13.png') }}', '{{ asset('stickers/wedding_pack/wedding13.png') }}', '{{ asset('stickers/love_pack/love13.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday14.png') }}', '{{ asset('stickers/wedding_pack/wedding14.png') }}', '{{ asset('stickers/love_pack/love14.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday15.png') }}', '{{ asset('stickers/wedding_pack/wedding15.png') }}', '{{ asset('stickers/love_pack/love15.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday16.png') }}', '{{ asset('stickers/wedding_pack/wedding16.png') }}', '{{ asset('stickers/love_pack/love16.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday17.png') }}', '{{ asset('stickers/wedding_pack/wedding17.png') }}', '{{ asset('stickers/love_pack/love17.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday18.png') }}', '{{ asset('stickers/wedding_pack/wedding18.png') }}', '{{ asset('stickers/love_pack/love18.png') }}',
+            '{{ asset('stickers/birthday_pack/birthday19.png') }}', '{{ asset('stickers/wedding_pack/wedding19.png') }}', '{{ asset('stickers/love_pack/love19.png') }}'
         ];
 
         const stickerList = document.getElementById('sticker-list');
