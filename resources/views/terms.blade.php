@@ -3,41 +3,83 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-8 prose max-w-none">
-                    <h1>Syarat dan Ketentuan (Terms and Conditions) untuk Camture</h1>
+            {{-- Card container --}}
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-2xl">
+                {{-- Styling prose untuk formatting teks, dengan warna custom Camture --}}
+                <div class="p-8 prose prose-lg max-w-none prose-headings:text-camture-rose prose-strong:text-camture-green-dark prose-ul:list-disc prose-ul:ml-6 prose-li:text-gray-700 prose-a:text-camture-rose hover:prose-a:text-camture-rose-hover">
 
-                    <p><strong>Pembaruan Terakhir: 19 Oktober 2025</strong></p>
+                    {{-- Judul Utama --}}
+                    <h1 class="text-3xl font-extrabold text-camture-rose mb-6 text-center">
+                        Syarat dan Ketentuan (Terms and Conditions)
+                    </h1>
 
-                    <p>Selamat datang di Camture! Mohon baca Syarat dan Ketentuan ini dengan saksama sebelum menggunakan layanan kami.</p>
+                    <p class="text-center text-sm text-gray-500 mb-8">
+                        Selamat datang di <strong class="text-camture-green-dark">CAMTURE</strong>!<br>
+                        Dengan mengakses dan menggunakan layanan kami, Anda dianggap telah membaca, memahami, dan menyetujui Syarat dan Ketentuan berikut.
+                    </p>
 
-                    <h2>1. Penerimaan Syarat</h2>
-                    <p>Dengan mengakses atau menggunakan situs web Camture ("Layanan"), Anda setuju untuk terikat oleh Syarat dan Ketentuan ini. Jika Anda tidak setuju dengan bagian mana pun dari syarat ini, Anda tidak diizinkan untuk menggunakan Layanan kami.</p>
-
-                    <h2>2. Deskripsi Layanan</h2>
-                    <p>Camture menyediakan platform photobooth online yang memungkinkan pengguna untuk mengambil foto, menerapkan berbagai template dan efek visual, serta mengunduh atau membagikan hasilnya. Untuk menyimpan riwayat foto Anda, diperlukan pembuatan akun dan proses login.</p>
-
-                    <h2>3. Akun Pengguna</h2>
-                    <ul>
-                        <li>Anda bertanggung jawab untuk menjaga kerahasiaan akun dan kata sandi Anda.</li>
-                        <li>Anda setuju untuk menerima tanggung jawab atas semua aktivitas yang terjadi di bawah akun Anda.</li>
-                        <li>Kami berhak menolak layanan, menghentikan akun, atau menghapus konten atas kebijakan kami sendiri.</li>
+                    {{-- Bagian Definisi --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4">
+                        1. Definisi
+                    </h2>
+                    <p class="text-gray-700 leading-relaxed">Dalam Syarat dan Ketentuan ini:</p>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li><strong class="text-camture-green-dark">Layanan</strong> berarti seluruh fitur yang disediakan oleh website photobooth online ini, termasuk pengambilan foto melalui kamera, penerapan filter, pemilihan template, serta pengunduhan hasil foto.</li>
+                        <li><strong class="text-camture-green-dark">Pengguna</strong> adalah setiap individu yang mengakses dan menggunakan layanan photobooth ini.</li>
                     </ul>
 
-                    <h2>4. Konten Pengguna</h2>
-                    <p>Anda memegang hak cipta penuh atas foto yang Anda buat menggunakan Layanan kami ("Konten Pengguna"). Namun, dengan menggunakan Layanan, Anda memberikan Camture lisensi terbatas untuk menyimpan, memproses, dan menampilkan Konten Pengguna Anda sebatas untuk keperluan penyediaan Layanan kepada Anda.</p>
+                    {{-- Bagian Penggunaan Layanan --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4 mt-8">
+                        2. Penggunaan Layanan
+                    </h2>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li>Pengguna dapat menggunakan kamera perangkat untuk mengambil foto secara langsung melalui website.</li>
+                        <li>Foto yang diambil dapat dimodifikasi menggunakan template dan filter yang tersedia di dalam sistem.</li>
+                        <li>Setelah selesai, pengguna dapat mengunduh hasil foto secara gratis untuk keperluan pribadi.</li>
+                        <li>Pengguna tidak diperbolehkan menggunakan layanan ini untuk tujuan komersial, ilegal, atau yang melanggar norma sosial dan hukum yang berlaku.</li>
+                        <li>Dilarang mengunggah, mengedit, atau membagikan foto yang mengandung unsur kekerasan, pornografi, diskriminasi, atau pelanggaran hak cipta.</li>
+                    </ul>
 
-                    <h2>5. Kebijakan Penyimpanan Foto</h2>
-                    <p>Semua foto yang dibuat dan disimpan di akun pengguna akan tersimpan di server kami. Kami berhak menerapkan kebijakan penghapusan foto otomatis (misalnya, setelah 30 hari) di masa mendatang untuk tujuan manajemen penyimpanan. Perubahan kebijakan tersebut akan diinformasikan kepada pengguna.</p>
+                    {{-- Bagian Hak Cipta --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4 mt-8">
+                        3. Hak Cipta dan Kepemilikan Konten
+                    </h2>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li>Seluruh foto yang diambil melalui website ini tetap menjadi milik pengguna.</li>
+                        <li>Template, filter, dan desain grafis yang disediakan merupakan hak cipta milik pengembang website dan tidak boleh digunakan kembali tanpa izin.</li>
+                        <li>Dengan menggunakan layanan ini, pengguna memberikan izin kepada sistem kami untuk memproses foto secara otomatis (misalnya untuk menambahkan filter atau template).</li>
+                        <li>Kami tidak akan menyimpan atau membagikan hasil foto pengguna ke pihak lain tanpa persetujuan eksplisit.</li>
+                    </ul>
 
-                    <h2>6. Kekayaan Intelektual</h2>
-                    <p>Semua template, efek visual, logo, dan elemen desain yang disediakan oleh Camture adalah milik Camture dan dilindungi oleh undang-undang hak cipta. Anda tidak diizinkan untuk menggunakan, menyalin, atau mendistribusikan ulang aset-aset ini tanpa izin tertulis dari kami.</p>
+                    {{-- Bagian Privasi --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4 mt-8">
+                        4. Privasi dan Keamanan Data
+                    </h2>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li>Website ini dapat meminta izin untuk mengakses kamera perangkat demi menjalankan fungsi photobooth. Akses tersebut hanya digunakan selama sesi berlangsung dan tidak disimpan setelah pengguna keluar dari halaman.</li>
+                        <li>Data pribadi atau foto pengguna tidak akan disimpan di server kecuali dinyatakan lain secara eksplisit.</li>
+                        <li>Kami tidak bertanggung jawab atas penyalahgunaan data oleh pihak ketiga di luar sistem kami.</li>
+                    </ul>
 
-                    <h2>7. Perubahan pada Layanan</h2>
-                    <p>Kami berhak untuk mengubah atau menghentikan Layanan (atau bagian apa pun darinya) kapan saja tanpa pemberitahuan. Kami tidak akan bertanggung jawab kepada Anda atau pihak ketiga mana pun atas modifikasi, penangguhan, atau penghentian Layanan.</p>
+                    {{-- Bagian Tanggung Jawab --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4 mt-8">
+                        5. Tanggung Jawab dan Batasan
+                    </h2>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li>Pengguna bertanggung jawab penuh atas konten foto yang dihasilkan melalui layanan ini.</li>
+                        <li>Kami tidak bertanggung jawab atas kehilangan data, kerusakan perangkat, atau gangguan teknis akibat penggunaan layanan ini.</li>
+                        <li>Layanan dapat dihentikan sementara atau permanen untuk pemeliharaan, pembaruan, atau alasan teknis lainnya tanpa pemberitahuan sebelumnya.</li>
+                    </ul>
 
-                    <h2>8. Hubungi Kami</h2>
-                    <p>Jika Anda memiliki pertanyaan tentang Syarat dan Ketentuan ini, silakan hubungi kami melalui email di naufalsafiqq@gmail.com</p>
+                    {{-- Bagian Perubahan S&K --}}
+                    <h2 class="text-2xl font-bold text-camture-rose border-b border-camture-peach pb-2 mb-4 mt-8">
+                        6. Perubahan Syarat dan Ketentuan
+                    </h2>
+                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
+                        <li>Syarat dan Ketentuan ini dapat diperbarui sewaktu-waktu sesuai kebutuhan pengembang.</li>
+                        <li>Versi terbaru akan ditampilkan di halaman ini, dan pengguna dianggap menyetujui perubahan setelah tetap menggunakan layanan.</li>
+                    </ul>
+
                 </div>
             </div>
         </div>
