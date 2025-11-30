@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the photos associated with the user.
+     * * Relasi One-to-Many: Satu User bisa memiliki banyak Foto.
+     * Digunakan untuk menghitung riwayat foto pengguna (photos_count).
+     */
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
     }
 }

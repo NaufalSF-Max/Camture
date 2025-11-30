@@ -12,10 +12,31 @@ class TemplateController extends Controller // Extend base Controller
     /**
      * Menampilkan daftar semua template (halaman manajemen template).
      */
-    public function index()
+    public function index(Request $request) // Tambahkan Request
     {
-        // Ambil template terbaru, paginasi 10 per halaman
-        $templates = Template::latest()->paginate(10);
+        $query = Template::query();
+
+        // 1. Searching (Berdasarkan Nama Template)
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // 2. Sorting (Dinamis)
+        $sortColumn = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+
+        // Validasi kolom agar tidak error
+        $validColumns = ['name', 'capture_slots', 'is_active', 'created_at'];
+
+        if (in_array($sortColumn, $validColumns)) {
+            $query->orderBy($sortColumn, $sortDirection);
+        } else {
+            $query->latest(); // Default
+        }
+
+        // Ambil template, paginasi 10 per halaman
+        $templates = $query->paginate(10);
+
         return view('admin.templates.index', compact('templates'));
     }
 
@@ -147,7 +168,7 @@ class TemplateController extends Controller // Extend base Controller
             ->with('success', "Template '{$template->name}' berhasil dihapus secara permanen.");
     }
 
-     /**
+    /**
      * Menampilkan detail template (jika diperlukan di masa depan).
      * Saat ini tidak digunakan.
      */

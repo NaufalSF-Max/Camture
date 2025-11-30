@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/select-template', [PhotoboothController::class, 'selectLayout'])->name('template.select'); // Dulu: layouts.select
     Route::get('/camture/{template}', [PhotoboothController::class, 'show'])->name('camture.show');
     Route::post('/camture/capture', [PhotoboothController::class, 'capture'])->name('camture.capture');
-    
+
     // Halaman Hasil & Galeri Foto
     Route::get('/result/{photo}', [PhotoboothController::class, 'showResult'])->name('photo.result'); // Dulu: photo.show
     Route::patch('/result/{photo}/title', [PhotoboothController::class, 'updateTitle'])->name('photo.update_title');
@@ -52,8 +52,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('templates/{template}/toggle', [TemplateController::class, 'toggleStatus'])->name('templates.toggleStatus');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [UserController::class, 'exportExcel'])->name('users.export');
     Route::patch('/users/{user}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
 });
 
 // 4. ROUTE OTENTIKASI BAWAAN LARAVEL
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

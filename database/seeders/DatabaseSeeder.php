@@ -30,5 +30,10 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'), // passwordnya adalah 'password'
             'role' => 'user',
         ]);
+
+        // 3. Buat 50 Data Dummy User (Untuk tes Pagination & Search)
+        User::factory(50)->create();
+
+        $this->command->info('Berhasil membuat 1 Admin, 1 User Test, dan 50 User Dummy!');
     }
 }

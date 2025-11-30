@@ -14,20 +14,37 @@ class UserController extends Controller // Extend base Controller
      */
     public function index(Request $request)
     {
-        // Fitur Searching & Pagination
         $query = User::query();
 
-        // Jika ada input search dari dashboard
+        // 1. Searching
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                ->orWhere('email', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
         }
 
-        // Ambil data user kecuali admin, urutkan terbaru, paginate 10
+        // 2. Sorting (Dinamis)
+        // Default: sort by created_at, direction desc
+        $sortColumn = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+
+        // Validasi kolom agar tidak error jika user iseng ubah URL
+        $validColumns = ['name', 'email', 'created_at', 'photos_count'];
+
+        if (in_array($sortColumn, $validColumns)) {
+            // Khusus photos_count perlu logic lain, tapi untuk basic kolom tabel:
+            if ($sortColumn === 'photos_count') {
+                $query->withCount('photos')->orderBy('photos_count', $sortDirection);
+            } else {
+                $query->withCount('photos')->orderBy($sortColumn, $sortDirection);
+            }
+        } else {
+            $query->withCount('photos')->latest(); // Fallback
+        }
+
         $users = $query->where('role', '!=', 'admin')
-            ->withCount('photos') // Menghitung jumlah foto user (Relasi harus ada)
-            ->latest()
-            ->paginate(10);
+            ->paginate(5); // Pagination 5 per halaman
 
         return view('admin.users.index', compact('users'));
     }
@@ -55,41 +72,36 @@ class UserController extends Controller // Extend base Controller
         return back()->with('success', "Peran untuk '{$user->name}' berhasil diperbarui menjadi {$user->role}.");
     }
 
-    // FITUR EXPORT CSV
-    public function exportCsv()
+    // FITUR EXPORT Excel
+    public function exportExcel()
     {
-        $fileName = 'laporan_user_camture_' . date('Y-m-d_H-i') . '.csv';
+        $date = date('d-m-Y H:i');
+        $fileName = 'Laporan_User_Camture_' . $date . '.xls'; // Ekstensi .xls agar dibaca Excel
 
         // Ambil data user + jumlah foto
-        $users = User::where('role', '!=', 'admin')->withCount('photos')->get();
+        $users = User::where('role', '!=', 'admin')
+            ->withCount('photos')
+            ->latest()
+            ->get();
 
-        $headers = array(
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        );
+        // Data Ringkasan untuk Header Laporan
+        $summary = [
+            'total_users' => $users->count(),
+            'total_photos' => $users->sum('photos_count'), // Total semua foto yang ada
+            'generated_at' => now()->format('d F Y, H:i WIB'),
+            'generated_by' => auth()->user()->name
+        ];
 
-        $columns = array('ID', 'Nama User', 'Email', 'Tanggal Bergabung', 'Jumlah Foto Diambil');
-
-        $callback = function () use ($users, $columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-
-            foreach ($users as $user) {
-                $row['ID'] = $user->id;
-                $row['Nama User'] = $user->name;
-                $row['Email'] = $user->email;
-                $row['Tanggal Bergabung'] = $user->created_at->format('d M Y');
-                $row['Jumlah Foto Diambil'] = $user->photos_count; // Menggunakan accessor withCount
-
-                fputcsv($file, array($row['ID'], $row['Nama User'], $row['Email'], $row['Tanggal Bergabung'], $row['Jumlah Foto Diambil']));
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        // Kita return View, tapi dengan Header Excel
+        return response()->view('admin.users.export', [
+            'users' => $users,
+            'summary' => $summary
+        ])->withHeaders([
+                    'Content-Type' => 'application/vnd.ms-excel',
+                    'Content-Disposition' => "attachment; filename=\"$fileName\"",
+                    'Pragma' => 'no-cache',
+                    'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                    'Expires' => '0',
+                ]);
     }
 }

@@ -165,14 +165,23 @@ class PhotoboothController extends Controller
     /**
      * Menampilkan galeri foto milik pengguna yang sedang login.
      */
-    public function myPhotos()
+    public function myPhotos(Request $request)
     {
-        // Ambil foto milik user yang login, urutkan dari terbaru, paginasi 12 per halaman
-        $photos = Photo::where('user_id', Auth::id())
-                        ->latest()
-                        ->paginate(12);
+        $query = auth()->user()->photos(); // Mulai query dari relasi user
 
-        return view('gallery', ['photos' => $photos]);
+        // 1. Searching (Berdasarkan Judul Foto / Caption jika ada)
+        // Anggap kita cari berdasarkan tanggal atau ID dulu jika tidak ada caption
+        if ($request->has('search')) {
+            $search = $request->search;
+            // Contoh: cari berdasarkan ID atau tanggal (karena foto jarang ada judul manual)
+            $query->where('created_at', 'like', '%' . $search . '%');
+        }
+
+        // 2. Sorting & Pagination
+        // Kita tampilkan 12 foto per halaman (Grid 3x4 atau 4x3)
+        $photos = $query->latest()->paginate(12);
+
+        return view('gallery', compact('photos'));
     }
 
     /**
