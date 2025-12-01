@@ -75,6 +75,14 @@ class PhotoboothController extends Controller
             $framesData = $validated['images']; // Data gambar (base64) dari frontend
             $slotPositionsPercent = json_decode($template->slot_positions, true); // Decode JSON posisi slot
 
+            // CEK APAKAH FILE TEMPLATE ASLI ADA?
+            $templatePath = Storage::disk('public')->path($template->image_path);
+
+            // Cek file fisik template (untuk menghindari error jika hanya ada di DB tapi file hilang)
+            if (!file_exists($templatePath)) {
+                throw new \Exception("File template rusak atau tidak ditemukan. Mohon hubungi Admin untuk upload ulang template.");
+            }
+
             // Validasi kecocokan jumlah gambar dan slot
             if (!$slotPositionsPercent || count($slotPositionsPercent) !== count($framesData)) {
                 throw new \Exception('Data posisi slot tidak valid atau tidak cocok dengan jumlah frame.');
@@ -116,6 +124,15 @@ class PhotoboothController extends Controller
             // 4. Setelah semua foto ditempatkan, tumpuk gambar template di atasnya
             $finalImage->place($templateImage, 'top-left', 0, 0);
             // --- Akhir Logika Penggabungan ---
+
+            // OTOMATIS BUAT FOLDER JIKA TIDAK ADA
+            $photoDirectory = 'photos';
+
+            // Cek apakah folder 'storage/app/public/photos' sudah ada?
+            if (!Storage::disk('public')->exists($photoDirectory)) {
+                // Jika belum ada, buat foldernya (termasuk permission 0755)
+                Storage::disk('public')->makeDirectory($photoDirectory);
+            }
 
             // Tentukan path penyimpanan
             $photoDirectory = 'photos'; // Folder penyimpanan di storage/app/public/photos
@@ -167,21 +184,41 @@ class PhotoboothController extends Controller
      */
     public function myPhotos(Request $request)
     {
-        $query = auth()->user()->photos(); // Mulai query dari relasi user
+        // 1. Mulai Query dari relasi user (Hanya foto milik user yg login)
+        $query = auth()->user()->photos();
 
-        // 1. Searching (Berdasarkan Judul Foto / Caption jika ada)
-        // Anggap kita cari berdasarkan tanggal atau ID dulu jika tidak ada caption
-        if ($request->has('search')) {
+        // 2. Logika Searching (Judul ATAU Tanggal)
+        if ($request->filled('search')) {
             $search = $request->search;
-            // Contoh: cari berdasarkan ID atau tanggal (karena foto jarang ada judul manual)
-            $query->where('created_at', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')       // Cari di Judul
+                    ->orWhere('created_at', 'like', '%' . $search . '%'); // Cari di Tanggal (YYYY-MM-DD)
+            });
         }
 
-        // 2. Sorting & Pagination
-        // Kita tampilkan 12 foto per halaman (Grid 3x4 atau 4x3)
-        $photos = $query->latest()->paginate(12);
+        // 3. Logika Sorting (Dropdown)
+        $sort = $request->get('sort', 'newest'); // Default: Terbaru
 
-        return view('gallery', compact('photos'));
+        switch ($sort) {
+            case 'oldest':
+                $query->oldest(); // Urutkan dari yang terlama
+                break;
+            case 'a-z':
+                $query->orderBy('title', 'asc'); // Judul A-Z
+                break;
+            case 'z-a':
+                $query->orderBy('title', 'desc'); // Judul Z-A
+                break;
+            default: // 'newest'
+                $query->latest(); // Urutkan dari yang terbaru
+                break;
+        }
+
+        // 4. Pagination (12 foto per halaman agar rapi di grid 3x4)
+        $photos = $query->paginate(12);
+
+        // Kirim data foto dan status sorting saat ini ke view
+        return view('gallery', compact('photos', 'sort'));
     }
 
     /**

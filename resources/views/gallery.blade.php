@@ -38,15 +38,20 @@
                     {{-- Jika ada foto --}}
                 @else
 
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800">Galeri Saya</h2>
+                    {{-- Header & Control Bar --}}
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
 
-                        <form action="{{ route('photo.gallery') }}" method="GET">
+                        {{-- FORM PENCARIAN & SORTING --}}
+                        <form action="{{ route('photo.gallery') }}" method="GET"
+                            class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+
+                            {{-- 1. Search Input --}}
                             <div class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
-                                    placeholder="Cari tanggal (YYYY-MM-DD)..."
-                                    class="rounded-full border-gray-300 pl-4 pr-10 focus:ring-camture-rose focus:border-camture-rose text-sm">
-                                <button type="submit" class="absolute right-2 top-2 text-gray-400 hover:text-camture-rose">
+                                    placeholder="Cari judul atau tanggal..."
+                                    class="w-full md:w-64 rounded-full border-camture-rose focus:ring-camture-rose focus:border-camture-rose pl-4 pr-10 shadow-sm text-sm">
+                                <button type="submit"
+                                    class="absolute right-3 top-2.5 text-gray-400 hover:text-camture-rose transition">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -54,6 +59,16 @@
                                     </svg>
                                 </button>
                             </div>
+
+                            {{-- 2. Sort Dropdown (Otomatis Submit saat ganti) --}}
+                            <select name="sort" onchange="this.form.submit()"
+                                class="rounded-full border-camture-rose focus:ring-camture-rose focus:border-camture-rose shadow-sm text-sm cursor-pointer bg-white">
+                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                                <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>Judul A-Z</option>
+                                <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Judul Z-A</option>
+                            </select>
+
                         </form>
                     </div>
 
